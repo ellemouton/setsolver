@@ -25,7 +25,7 @@ func NewSet(cards []*Card) (*Set, error) {
 
 	for _, card := range cards {
 		if !set.Add(card) {
-			return nil, fmt.Errorf("invalid Set")
+			return nil, fmt.Errorf("invalid set")
 		}
 	}
 

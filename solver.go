@@ -32,14 +32,14 @@ func NewSetSolver(cfg *Config, attributes ...Attribute) (SetSolver, error) {
 
 	attributeList := make(map[AttributeName]Attribute)
 	for _, attribute := range attributes {
-		name := attribute.Name()
+		name := attribute.Name
 
 		if _, ok := attributeList[name]; ok {
 			return nil, fmt.Errorf("an attribute named %s has "+
 				"already been registered", name)
 		}
 
-		count := len(attribute.Variants())
+		count := len(attribute.Variants)
 		if count != int(cfg.VariantCount) {
 			return nil, fmt.Errorf("expected a variant count of "+
 				"%d but attribute %s has a variant count of "+
@@ -58,6 +58,7 @@ func (s *setSolver) Solve(cards []Card) (*Set, error) {
 		return nil, err
 	}
 
+	return nil, nil
 }
 
 func (s *setSolver) validateCards(cards []Card) error {
@@ -72,18 +73,18 @@ func (s *setSolver) validateCards(cards []Card) error {
 		}
 
 		for _, attribute := range s.attributes {
-			variant, ok := card.Attributes[attribute.Name()]
+			variant, ok := card.Attributes[attribute.Name]
 			if !ok {
 				return fmt.Errorf("card(%s) is missing "+
-					"attribute %s", cards, attribute.Name())
+					"attribute %s", cards, attribute.Name)
 			}
 
-			_, ok = attribute.Variants()[variant]
+			_, ok = attribute.Variants[variant]
 			if !ok {
 				return fmt.Errorf("card(%s) has an unknown "+
 					"varient (%s) for attribute %s. "+
 					"Expected one of: %v", cards, variant,
-					attribute.Name(), attribute.Variants())
+					attribute.Name, attribute.Variants)
 			}
 		}
 	}
