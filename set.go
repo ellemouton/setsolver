@@ -32,12 +32,38 @@ func NewSet(cards []*Card) (*Set, error) {
 	return set, nil
 }
 
+func (s *Set) Copy() *Set {
+	cards := make([]*Card, len(s.Cards))
+	for i, card := range s.Cards {
+		cards[i] = card
+	}
+	properties := make(map[AttributeName]propertyState)
+	for att, state := range s.properties {
+		properties[att] = state
+	}
+
+	return &Set{
+		Cards:      cards,
+		properties: properties,
+	}
+}
+
+func (s *Set) CanAdd(card *Card) bool {
+	return s.maybeAdd(card, false)
+}
+
 func (s *Set) Add(card *Card) bool {
+	return s.maybeAdd(card, true)
+}
+
+func (s *Set) maybeAdd(card *Card, withAdd bool) bool {
 	switch len(s.Cards) {
 	// If the Set doesn't have any card in it yet, then adding this card is
 	// a valid set.
 	case 0:
-		s.Cards = []*Card{card}
+		if withAdd {
+			s.Cards = []*Card{card}
+		}
 
 		return true
 
@@ -62,7 +88,9 @@ func (s *Set) Add(card *Card) bool {
 			}
 		}
 
-		s.Cards = append(s.Cards, card)
+		if withAdd {
+			s.Cards = append(s.Cards, card)
+		}
 
 		return true
 
@@ -77,7 +105,9 @@ func (s *Set) Add(card *Card) bool {
 		}
 	}
 
-	s.Cards = append(s.Cards, card)
+	if withAdd {
+		s.Cards = append(s.Cards, card)
+	}
 
 	return true
 }

@@ -3,12 +3,39 @@ package setsolver
 import "fmt"
 
 var (
-	Colour = Attribute{
+	Colour = &Attribute{
 		Name: "Colour",
 		Variants: map[VariantName]struct{}{
 			"Red":    {},
 			"Green":  {},
 			"Purple": {},
+		},
+	}
+
+	Shape = &Attribute{
+		Name: "Shape",
+		Variants: map[VariantName]struct{}{
+			"Squiggle": {},
+			"Oval":     {},
+			"Diamond":  {},
+		},
+	}
+
+	Count = &Attribute{
+		Name: "Count",
+		Variants: map[VariantName]struct{}{
+			"One":   {},
+			"Two":   {},
+			"Three": {},
+		},
+	}
+
+	Fill = &Attribute{
+		Name: "Shading",
+		Variants: map[VariantName]struct{}{
+			"Hollow": {},
+			"Solid":  {},
+			"Shaded": {},
 		},
 	}
 )
