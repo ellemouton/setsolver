@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'home_screen.dart';
+import 'package:camera/camera.dart';
 
-void main() {
+List<CameraDescription> cameras = [];
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    cameras = await availableCameras();
+  } catch (e) {
+    print('Error: $e');
+  }
+
   runApp(const SetSolver());
 }
 
