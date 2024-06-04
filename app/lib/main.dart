@@ -16,7 +16,8 @@ class SetSolver extends StatelessWidget {
     return MaterialApp(
       title: 'SET Solver',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 100, 33, 217)),
         useMaterial3: true,
       ),
       home: const HomePage(title: 'SET Solver'),
