@@ -24,7 +24,7 @@ a set is present.
 
 This project will need the following components to work:
 
-1) App: A basic app (I will likely use Dart/Flutter) to capture the image & provide 
+1) App: A basic app (I will use Dart/Flutter) to capture the image & provide 
   visual feedback about where a SET is on the picture. 
 2) Edge detector: which will take the image and determine where all the cards are
   in the image. Input: single image; Output: multiple images.
@@ -38,8 +38,8 @@ This project will need the following components to work:
 
 
 ## What is complete?
- - [x] So far, I have built a brute force solver in Golang. I made it quite 
-   general so you could even create a SET game with more dimensions. The algo
-   can defs still be optimised. I will either need to re-write this in Dart or
-   I need to figure out how to package the go application in flutter and call 
-   it from there.
+ - [x] Brute force solver in Golang. I made it quite general so you could even 
+   create a SET game with more dimensions. The algo can defs still be optimised. 
+   I will either need to re-write this in Dart or I need to figure out how to 
+   package the go application in flutter and call it from there.
+ - [x] App: Take pic or load one from gallery
