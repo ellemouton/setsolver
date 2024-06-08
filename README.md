@@ -43,3 +43,4 @@ This project will need the following components to work:
    I will either need to re-write this in Dart or I need to figure out how to 
    package the go application in flutter and call it from there.
  - [x] App: Take pic or load one from gallery
+ - [x] Python Jupyter notebook for edge detection on an image
