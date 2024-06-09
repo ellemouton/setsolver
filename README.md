@@ -45,3 +45,5 @@ This project will need the following components to work:
  - [x] App: Take pic or load one from gallery
  - [x] Python [Jupyter notebook](/edge-detection/edge-detection.ipynb) for edge 
    detection on an image.
+ - [x] Python [Jupyter notebook](/edge-detection/card-classification.ipynb) for 
+   card classification detection on an image.
