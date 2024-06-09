@@ -43,7 +43,7 @@ This project will need the following components to work:
    I will either need to re-write this in Dart or I need to figure out how to 
    package the go application in flutter and call it from there.
  - [x] App: Take pic or load one from gallery
- - [x] Python [Jupyter notebook](/edge-detection/edge-detection.ipynb) for edge 
-   detection on an image.
- - [x] Python [Jupyter notebook](/edge-detection/card-classification.ipynb) for 
-   card classification detection on an image.
+ - [x] Python [Jupyter notebook](/image-processing/edge-detection.ipynb) for 
+   edge detection on an image.
+ - [x] Python [Jupyter notebook](/image-processing/card-classification.ipynb) 
+   for card classification detection on an image.
