@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,8 +17,10 @@ class CameraGalleryScreen extends StatefulWidget {
 
 class _CameraGalleryScreenState extends State<CameraGalleryScreen> {
   CameraController? controller;
-  String? imagePath;
   final ImagePicker _picker = ImagePicker();
+
+  File? _image;
+  File? _pImage;
 
   @override
   void initState() {
@@ -48,8 +52,9 @@ class _CameraGalleryScreenState extends State<CameraGalleryScreen> {
 
     try {
       XFile picture = await controller!.takePicture();
+      print('New picture taken: ${picture.path}');
       setState(() {
-        imagePath = picture.path;
+        _image = File(picture.path);
       });
     } catch (e) {
       print(e);
@@ -60,9 +65,46 @@ class _CameraGalleryScreenState extends State<CameraGalleryScreen> {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
-        imagePath = image.path;
+        _image = File(image.path);
       });
     }
+  }
+
+  Future<void> _processImage() async {
+    if (_image == null) return;
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://10.0.0.97:8080/process_image'),
+    );
+    request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      final Directory tempDir = await getTemporaryDirectory();
+      final String uniqueFileName =
+          'processed_image_${DateTime.now().millisecondsSinceEpoch}.png';
+      final File file = File('${tempDir.path}/$uniqueFileName');
+      await response.stream.pipe(file.openWrite());
+      setState(() {
+        _pImage = file;
+      });
+    } else {
+      print('Failed to process image');
+    }
+  }
+
+  Widget _mainDisplay() {
+    if (_pImage != null) {
+      return Expanded(child: Image.file(_pImage!));
+    }
+
+    if (_image == null) {
+      return Expanded(child: CameraPreview(controller!));
+    }
+
+    return Expanded(child: Image.file(_image!));
   }
 
   @override
@@ -72,39 +114,40 @@ class _CameraGalleryScreenState extends State<CameraGalleryScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Camera and Gallery'),
+        title: const Text('Camera and Gallery'),
       ),
       body: Column(
         children: [
-          if (imagePath == null)
-            Expanded(
-              child: CameraPreview(controller!),
-            )
-          else
-            Expanded(
-              child: Image.file(File(imagePath!)),
-            ),
+          _mainDisplay(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
-                  onPressed: takePicture,
-                  child: Text('Take Picture'),
-                ),
-                ElevatedButton(
-                  onPressed: pickImageFromGallery,
-                  child: Text('Load from Gallery'),
-                ),
-                if (imagePath != null)
+                if (_image == null)
+                  ElevatedButton(
+                    onPressed: takePicture,
+                    child: const Text('Take Picture'),
+                  ),
+                if (_image == null)
+                  ElevatedButton(
+                    onPressed: pickImageFromGallery,
+                    child: const Text('Load from Gallery'),
+                  ),
+                if (_image != null)
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        imagePath = null;
+                        _image = null;
+                        _pImage = null;
                       });
                     },
-                    child: Text('Retake/Reload'),
+                    child: const Text('Retake/Reload'),
+                  ),
+                if (_image != null)
+                  ElevatedButton(
+                    onPressed: _processImage,
+                    child: const Text('Process'),
                   ),
               ],
             ),
