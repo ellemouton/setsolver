@@ -42,13 +42,18 @@ def process_image():
     file = request.files['image']
     image = Image.open(file.stream)
     image = np.array(correct_image_orientation(image))
+    
+    # Save the processed image to a file for debugging
+    processed_image_path = 'processed_image.png'
+    processed_image_pil = Image.fromarray(image)
+    processed_image_pil.save(processed_image_path)
 
     processed_image = find_and_draw_cards(image)
 
     # Save the processed image to a file for debugging
-    # processed_image_path = 'processed_image.png'
-    # processed_image_pil = Image.fromarray(processed_image)
-    # processed_image_pil.save(processed_image_path)
+    processed_image_path = 'image.png'
+    processed_image_pil = Image.fromarray(processed_image)
+    processed_image_pil.save(processed_image_path)
 
     # Convert the processed image back to a file-like object
     processed_image_pil = Image.fromarray(processed_image)

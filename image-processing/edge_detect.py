@@ -24,6 +24,14 @@ shape_classify_lite = shape_interpreter.get_signature_runner('serving_default')
 shape_input_details = shape_interpreter.get_input_details()
 shape_output_details = shape_interpreter.get_output_details()
 
+TF_COLOUR_MODEL_FILE_PATH = 'colour_model.tflite' 
+
+colour_interpreter = tf.lite.Interpreter(model_path=TF_COLOUR_MODEL_FILE_PATH)
+colour_classify_lite = colour_interpreter.get_signature_runner('serving_default')
+
+colour_input_details = colour_interpreter.get_input_details()
+colour_output_details = colour_interpreter.get_output_details()
+
 def read_image(image_path):
     # Load the image using OpenCV.
     image = cv2.imread(image_path)
@@ -150,9 +158,28 @@ def find_cards(image):
         
         cardShape(card)
 
+        cardColour(card)
+
         cards.append(card)
 
     return cards
+
+colour_class_names = ['green', 'purple', 'red']
+
+def cardColour(card):
+    img_height, img_width = colour_input_details[0]['shape'][1], colour_input_details[0]['shape'][2]
+    single_shape = cv2.resize(card.single_shape, (img_height, img_width))
+
+    img_array = tf.keras.utils.img_to_array(single_shape)
+    img_array = tf.expand_dims(img_array, 0) # Create a batch
+
+    predictions_lite = colour_classify_lite(sequential_6_input=img_array)['outputs']
+    score_lite = tf.nn.softmax(predictions_lite)
+
+    colour = colour_class_names[np.argmax(score_lite)]
+
+    card.setColour(colour)
+    print("The colour is: ", colour)
 
 shape_class_names = ['diamond', 'oval', 'squiggle']
 
@@ -180,7 +207,7 @@ def cardFill(card):
     img_array = tf.keras.utils.img_to_array(single_shape)
     img_array = tf.expand_dims(img_array, 0) # Create a batch
 
-    predictions_lite = fill_classify_lite(sequential_3_input=img_array)['outputs']
+    predictions_lite = fill_classify_lite(sequential_4_input=img_array)['outputs']
     score_lite = tf.nn.softmax(predictions_lite)
 
     fill = fill_class_names[np.argmax(score_lite)]
