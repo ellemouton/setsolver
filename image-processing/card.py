@@ -17,6 +17,9 @@ class Card:
         # be used during classification of the card.
         self.image = rotate_and_crop(image, self.rect)
 
+    def setShape(self, shape): 
+        self.shape = shape
+
     def setFill(self, fill):
         self.fill = fill
     
@@ -35,7 +38,7 @@ class Card:
         cv2.putText(image, str(self), text_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
 
     def __str__(self):
-        return f"{self.count}, {self.fill}"
+        return f"{self.count}, {self.fill}, {self.shape}"
 
     def zoomOnShape(self, contour):
         global pic_counter

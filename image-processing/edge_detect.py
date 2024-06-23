@@ -16,6 +16,14 @@ fill_classify_lite = fill_interpreter.get_signature_runner('serving_default')
 fill_input_details = fill_interpreter.get_input_details()
 fill_output_details = fill_interpreter.get_output_details()
 
+TF_SHAPE_MODEL_FILE_PATH = 'shape_model.tflite' 
+
+shape_interpreter = tf.lite.Interpreter(model_path=TF_SHAPE_MODEL_FILE_PATH)
+shape_classify_lite = shape_interpreter.get_signature_runner('serving_default')
+
+shape_input_details = shape_interpreter.get_input_details()
+shape_output_details = shape_interpreter.get_output_details()
+
 def read_image(image_path):
     # Load the image using OpenCV.
     image = cv2.imread(image_path)
@@ -139,11 +147,29 @@ def find_cards(image):
 
         # Attempt to guess the fill.
         cardFill(card)
+        
+        cardShape(card)
 
         cards.append(card)
 
     return cards
 
+shape_class_names = ['diamond', 'oval', 'squiggle']
+
+def cardShape(card):
+    img_height, img_width = shape_input_details[0]['shape'][1], shape_input_details[0]['shape'][2]
+    single_shape = cv2.resize(card.single_shape, (img_height, img_width))
+
+    img_array = tf.keras.utils.img_to_array(single_shape)
+    img_array = tf.expand_dims(img_array, 0) # Create a batch
+
+    predictions_lite = shape_classify_lite(sequential_5_input=img_array)['outputs']
+    score_lite = tf.nn.softmax(predictions_lite)
+
+    shape = shape_class_names[np.argmax(score_lite)]
+
+    card.setShape(shape)
+    print("The shape is: ", shape)
 
 fill_class_names = ['hollow', 'shaded', 'solid']
 
@@ -160,7 +186,6 @@ def cardFill(card):
     fill = fill_class_names[np.argmax(score_lite)]
 
     card.setFill(fill)
-    print("The fill is: ", fill)
     
 
 def cardCount(card):
