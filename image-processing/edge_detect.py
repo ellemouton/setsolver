@@ -6,6 +6,15 @@ from PIL import Image
 import imutils
 import os
 from card import Card
+import tensorflow as tf
+
+TF_FILL_MODEL_FILE_PATH = 'fill_model.tflite' 
+
+fill_interpreter = tf.lite.Interpreter(model_path=TF_FILL_MODEL_FILE_PATH)
+fill_classify_lite = fill_interpreter.get_signature_runner('serving_default')
+
+fill_input_details = fill_interpreter.get_input_details()
+fill_output_details = fill_interpreter.get_output_details()
 
 def read_image(image_path):
     # Load the image using OpenCV.
@@ -128,10 +137,31 @@ def find_cards(image):
         # First find the count.
         cardCount(card)
 
+        # Attempt to guess the fill.
+        cardFill(card)
+
         cards.append(card)
 
     return cards
 
+
+fill_class_names = ['hollow', 'shaded', 'solid']
+
+def cardFill(card):
+    img_height, img_width = fill_input_details[0]['shape'][1], fill_input_details[0]['shape'][2]
+    single_shape = cv2.resize(card.single_shape, (img_height, img_width))
+
+    img_array = tf.keras.utils.img_to_array(single_shape)
+    img_array = tf.expand_dims(img_array, 0) # Create a batch
+
+    predictions_lite = fill_classify_lite(sequential_3_input=img_array)['outputs']
+    score_lite = tf.nn.softmax(predictions_lite)
+
+    fill = fill_class_names[np.argmax(score_lite)]
+
+    card.setFill(fill)
+    print("The fill is: ", fill)
+    
 
 def cardCount(card):
     # Some filtering to make the shape stand out.

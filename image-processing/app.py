@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image, ExifTags
 import io
-from edge_detect import find_and_draw_cards
+from edge_detect import find_and_draw_cards, fill_interpreter
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -30,7 +30,9 @@ def correct_image_orientation(image):
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    return jsonify({"status": "Server is running"}), 200
+    thing = fill_interpreter.get_signature_list()
+
+    return jsonify({"status": f'Server is running: {thing}'}), 200
 
 @app.route('/process_image', methods=['POST'])
 def process_image():
