@@ -122,20 +122,18 @@ def find_cards(image):
     
     # For each card contour, create a new Card object.
     cards = []
-    j = 0
     for contour in card_contours: 
         card = Card(contour, image)
 
         # First find the count.
-        cardCount(card, j)
-        j+=1
+        cardCount(card)
 
         cards.append(card)
 
     return cards
 
 
-def cardCount(card, j):
+def cardCount(card):
     # Some filtering to make the shape stand out.
     gray = cv2.cvtColor(card.image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (3, 3), 0)
@@ -179,11 +177,16 @@ def cardCount(card, j):
 
     card.setCount(count)
 
+    # Now we can just focus on one shape. So select one contour
+    # and zoom in on that. 
+    contour = finalContours[0] 
+
+    card.zoomOnShape(contour)
+
 
 pic_counter = 0
 def create_training_set(image):
     global pic_counter
-
     pic_counter+=1
 
     cards = find_cards(image)

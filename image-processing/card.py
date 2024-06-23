@@ -1,4 +1,8 @@
 import cv2
+from PIL import Image
+import os
+
+pic_counter = 0
 
 class Card:
     def __init__(self, contour, image):
@@ -27,6 +31,21 @@ class Card:
         # Put the text in the rectangle
         cv2.putText(image, f"{self.count}", text_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
 
+    def zoomOnShape(self, contour):
+        global pic_counter
+        pic_counter+=1
+
+        x, y, w, h = cv2.boundingRect(contour)
+        self.single_shape = self.image[y:y+h, x:x+w]
+
+        output_dir = 'temp'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        # Save the processed image to a file for debugging
+        output_path = os.path.join(output_dir, f'shape_{pic_counter}.png')
+        image_to_save = cv2.cvtColor(self.single_shape, cv2.COLOR_BGR2RGB)
+        cv2.imwrite(output_path, image_to_save)
 
 def rotate_and_crop(image, rect):
     """
