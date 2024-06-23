@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image, ExifTags
 import io
-from edge_detect import edge_detection
+from edge_detect import find_and_draw_cards
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -41,13 +41,12 @@ def process_image():
     image = Image.open(file.stream)
     image = np.array(correct_image_orientation(image))
 
-    # Your image processing code here (drawing lines on the image)
-    processed_image = edge_detection(image)
+    processed_image = find_and_draw_cards(image)
 
     # Save the processed image to a file for debugging
-    processed_image_path = 'processed_image.png'
-    processed_image_pil = Image.fromarray(processed_image)
-    processed_image_pil.save(processed_image_path)
+    # processed_image_path = 'processed_image.png'
+    # processed_image_pil = Image.fromarray(processed_image)
+    # processed_image_pil.save(processed_image_path)
 
     # Convert the processed image back to a file-like object
     processed_image_pil = Image.fromarray(processed_image)
