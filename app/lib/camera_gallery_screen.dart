@@ -52,7 +52,6 @@ class _CameraGalleryScreenState extends State<CameraGalleryScreen> {
 
     try {
       XFile picture = await controller!.takePicture();
-      print('New picture taken: ${picture.path}');
       setState(() {
         _image = File(picture.path);
       });

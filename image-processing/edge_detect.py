@@ -207,7 +207,7 @@ def cardFill(card):
     img_array = tf.keras.utils.img_to_array(single_shape)
     img_array = tf.expand_dims(img_array, 0) # Create a batch
 
-    predictions_lite = fill_classify_lite(sequential_4_input=img_array)['outputs']
+    predictions_lite = fill_classify_lite(sequential_10_input=img_array)['outputs']
     score_lite = tf.nn.softmax(predictions_lite)
 
     fill = fill_class_names[np.argmax(score_lite)]
