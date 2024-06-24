@@ -4,8 +4,15 @@ import os
 
 pic_counter = 0
 
+cardID = 0
+
 class Card:
     def __init__(self, contour, image):
+        global cardID
+        cardID+=1
+
+        self.id = cardID
+
         # Contour is the original contour of the card on the image.
         self.contour = contour
 
@@ -27,7 +34,13 @@ class Card:
         self.fill = fill
     
     def setCount(self, count):
-        self.count = count
+        countStr = "three"
+        if count == 1:
+            countStr = "one"
+        elif count == 2:
+            countStr = "two"
+
+        self.count = countStr
 
     def writeOnImage(self, image):
         # Calculate the center of the rectangle
@@ -73,9 +86,9 @@ class Card:
            os.makedirs(output_dir)
 
         # Save the processed image to a file for debugging
-        output_path = os.path.join(output_dir, f'shape_{pic_counter}.png')
-        image_to_save = cv2.cvtColor(self.single_shape, cv2.COLOR_BGR2RGB)
-        cv2.imwrite(output_path, image_to_save)
+        # output_path = os.path.join(output_dir, f'shape_{pic_counter}.png')
+        # image_to_save = cv2.cvtColor(self.single_shape, cv2.COLOR_BGR2RGB)
+        # cv2.imwrite(output_path, image_to_save)
 
 def rotate_and_crop(image, rect):
     """

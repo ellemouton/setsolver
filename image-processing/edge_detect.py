@@ -7,6 +7,9 @@ import imutils
 import os
 from card import Card
 import tensorflow as tf
+import requests
+
+url = "http://localhost:8081/set"
 
 TF_FILL_MODEL_FILE_PATH = 'fill_model.tflite' 
 
@@ -114,21 +117,68 @@ def find_contours(image):
 
     return card_contours
 
-def draw_cards_on_image(image, cards):
+def draw_cards_on_image(image, cards, setIDs):
     contour_image = image.copy()
 
     for card in cards:
-        cv2.drawContours(contour_image, [card.contour], 0, (36,255,12), 3)
+        if card.id in setIDs:
+            cv2.drawContours(contour_image, [card.contour], 0, (36,255,12), 3)
+        
         card.writeOnImage(contour_image)
     
     return contour_image
 
+def writeOnImage(image, text):
+    cv2.putText(image, text, (0,0), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 2, cv2.LINE_AA)
 
 def edge_detection_from_path(image_path):
     # image is the original image.
     image = read_image(image_path)
 
     return find_and_draw_cards(image)
+
+def card_to_dict(card):
+    return {
+        "id": card.id,
+        "colour": card.colour,
+        "fill": card.fill,
+        "shape": card.shape,
+        "count": card.count
+    }
+
+def solve(image):
+    # Find the cards on the image and classify them all.
+    cards = find_cards(image)
+
+    card_map = {card.id: card for card in cards}
+    cards_dict = [card_to_dict(card) for card in cards]
+
+    response = requests.post(url, json={"cards": cards_dict})
+
+    if response.status_code != 200:
+        print(f"Failed to get response. Status code: {response.status_code}")
+
+        errImage = writeOnImage(image, "failed to get response from solver")
+
+        return errImage
+
+    data = response.json()
+    sets = data['sets']
+
+    if len(sets) == 0:
+        noSetsImage = writeOnImage(image, "no SET found!")
+
+        return noSetsImage
+
+ 
+    #for i, set_ in enumerate(sets):
+    #    print(f"Set {i+1}:")
+
+    # Create a new image that has the contours drawn on it.
+    contours_image = draw_cards_on_image(image, cards, sets[0])
+
+    return contours_image
+
 
 def find_and_draw_cards(image):
     cards = find_cards(image)
@@ -179,7 +229,6 @@ def cardColour(card):
     colour = colour_class_names[np.argmax(score_lite)]
 
     card.setColour(colour)
-    print("The colour is: ", colour)
 
 shape_class_names = ['diamond', 'oval', 'squiggle']
 
@@ -196,7 +245,6 @@ def cardShape(card):
     shape = shape_class_names[np.argmax(score_lite)]
 
     card.setShape(shape)
-    print("The shape is: ", shape)
 
 fill_class_names = ['hollow', 'shaded', 'solid']
 
