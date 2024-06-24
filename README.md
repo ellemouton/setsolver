@@ -76,3 +76,8 @@ This project consists of the following components:
    - help out the model by first taking a circle sample from the middle of a 
      shape rather than looking at the whole thing.
 2) UI improvements
+
+
+## Resources used:
+
+- https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image_dataset_from_directory
