@@ -129,7 +129,7 @@ def draw_cards_on_image(image, cards, setIDs):
     return contour_image
 
 def writeOnImage(image, text):
-    cv2.putText(image, text, (0,0), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 2, cv2.LINE_AA)
+    cv2.putText(image, text, (100,100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 2, cv2.LINE_AA)
 
 def edge_detection_from_path(image_path):
     # image is the original image.
@@ -158,17 +158,17 @@ def solve(image):
     if response.status_code != 200:
         print(f"Failed to get response. Status code: {response.status_code}")
 
-        errImage = writeOnImage(image, "failed to get response from solver")
+        writeOnImage(image, "failed to get response from solver")
 
-        return errImage
+        return image
 
     data = response.json()
     sets = data['sets']
 
     if len(sets) == 0:
-        noSetsImage = writeOnImage(image, "no SET found!")
+        writeOnImage(image, "no SET found!")
 
-        return noSetsImage
+        return image
 
  
     #for i, set_ in enumerate(sets):

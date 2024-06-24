@@ -42,6 +42,8 @@ def process_image():
     file = request.files['image']
     image = Image.open(file.stream)
     image = np.array(correct_image_orientation(image))
+
+    print(image.size)
     
     processed_image = solve(image)
 
