@@ -1,6 +1,10 @@
 # SET Solver
 
-<img src="static/card_labeling.PNG" width="200">
+<img src="static/take_pic.jpg" width="200">
+
+<img src="static/set_1.jpg" width="200">
+<img src="static/set_2.jpg" width="200">
+<img src="static/no_set.jpg" width="200">
 
 ## Background
 
