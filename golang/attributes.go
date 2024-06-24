@@ -4,38 +4,38 @@ import "fmt"
 
 var (
 	Colour = &Attribute{
-		Name: "Colour",
+		Name: "colour",
 		Variants: map[VariantName]struct{}{
-			"Red":    {},
-			"Green":  {},
-			"Purple": {},
+			"red":    {},
+			"green":  {},
+			"purple": {},
 		},
 	}
 
 	Shape = &Attribute{
-		Name: "Shape",
+		Name: "shape",
 		Variants: map[VariantName]struct{}{
-			"Squiggle": {},
-			"Oval":     {},
-			"Diamond":  {},
+			"squiggle": {},
+			"oval":     {},
+			"diamond":  {},
 		},
 	}
 
 	Count = &Attribute{
-		Name: "Count",
+		Name: "count",
 		Variants: map[VariantName]struct{}{
-			"One":   {},
-			"Two":   {},
-			"Three": {},
+			"one":   {},
+			"two":   {},
+			"three": {},
 		},
 	}
 
 	Fill = &Attribute{
-		Name: "Shading",
+		Name: "shading",
 		Variants: map[VariantName]struct{}{
-			"Hollow": {},
-			"Solid":  {},
-			"Shaded": {},
+			"hollow": {},
+			"solid":  {},
+			"shaded": {},
 		},
 	}
 )

@@ -25,6 +25,13 @@ type setSolver struct {
 	attributes map[AttributeName]*Attribute
 }
 
+func NewDefaultSetSolver() (SetSolver, error) {
+	return NewSetSolver(&Config{
+		VariantCount: 3,
+		SetSize:      3,
+	}, Colour, Shape, Fill, Count)
+}
+
 func NewSetSolver(cfg *Config, attributes ...*Attribute) (SetSolver, error) {
 	if cfg.SetSize > cfg.VariantCount {
 		return nil, fmt.Errorf("the set size of %d is greater than "+
