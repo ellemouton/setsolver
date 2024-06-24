@@ -1,10 +1,16 @@
 # SET Solver
 
-<img src="static/take_pic.jpg" width="200">
+## Status
 
-<img src="static/set_1.jpg" width="200">
-<img src="static/set_2.jpg" width="200">
-<img src="static/no_set.jpg" width="200">
+PoC: complete. 
+
+## Results
+
+<img src="static/take_pic.PNG" width="200"><img src="static/set_1.PNG" width="200"><img src="static/set_2.PNG" width="200"><img src="static/no_set.PNG" width="200">
+
+## System Design
+
+<img src="static/setsolver.png">
 
 ## Background
 
@@ -15,7 +21,7 @@ Unlike the online version which guarantees that there are always 6 sets in the
 set of cards you are dealt, in the physical card game it is possible to have 12
 cards in front of you that do not contain any sets. The rules state that if 
 everyone playing agrees that there is no SET, then an extra row of cards can be
-added. However, I think many times the group is perhaps just not seeing a set. 
+added. However, I think many times the group is perhaps just not seeing a set.
 
 ## Goal
 
@@ -41,7 +47,9 @@ This project consists of the following components:
         that I will train with some data.
 5) Solver: 
    Once we know which cards are on the table, the next step is just to find if
-   there is a valid set.
+   there is a valid set. I wrote this part first and in Golang. So instead of 
+   re-writing the whole thing again in Python, I've instead created a Golang 
+   server that the python code calls.
 6) Report the results back to the front-end app
 
 ## What is complete?
@@ -57,9 +65,14 @@ This project consists of the following components:
  - [x] Python Flask App
  - [x] Trained models for colour, shading & fill
  - [x] report card type back to user.
+ - [x] golang server to respond to python calls
+ - [x] report back set results to user
 
-## Next:
+## Room for improvement:
 
-- Reproduce the golang solver in python. 
-- report back the results to the front end app
-
+1) The "fill" classifier seems to really struggle with shaded vs hollow. So 
+   we could:  
+   - use more training data
+   - help out the model by first taking a circle sample from the middle of a 
+     shape rather than looking at the whole thing.
+2) UI improvements
